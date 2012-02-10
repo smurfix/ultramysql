@@ -1,4 +1,4 @@
-use gevent_test;
+use test_gevent;
 
 CREATE TABLE `tbltest` (
   `test_id` int(11),

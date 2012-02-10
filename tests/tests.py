@@ -73,9 +73,9 @@ import umysql
 
 DB_HOST = '127.0.0.1'
 DB_PORT = 3306
-DB_USER = 'gevent_test'
-DB_PASSWD = 'gevent_test'
-DB_DB = 'gevent_test'
+DB_USER = 'test'
+DB_PASSWD = 'test'
+DB_DB = 'test_gevent'
 
 class TestMySQL(unittest.TestCase):
     log = logging.getLogger('TestMySQL')
@@ -276,7 +276,7 @@ class TestMySQL(unittest.TestCase):
 
     def testConnectNoDb(self):
         cnn = umysql.Connection()
-        cnn.connect (DB_HOST, 3306, DB_USER, DB_PASSWD, "")
+        cnn.connect (DB_HOST, 3306, DB_USER, DB_PASSWD, DB_DB)
 
         rs = cnn.query("select 1")
 
@@ -285,7 +285,7 @@ class TestMySQL(unittest.TestCase):
     
     def testConnectAutoCommitOff(self):
         cnn = umysql.Connection()
-        cnn.connect (DB_HOST, 3306, DB_USER, DB_PASSWD, "", False)
+        cnn.connect (DB_HOST, 3306, DB_USER, DB_PASSWD, DB_DB, False)
 
         rs = cnn.query("select 1")
 
