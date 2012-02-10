@@ -121,7 +121,7 @@ typedef struct {
   PyObject *(*PFN_PyUnicode_Encode)(const Py_UNICODE *data, Py_ssize_t length, const char *errors);
 } Connection;
 
-void *API_getSocket();
+void *API_getSocket(void);
 void API_closeSocket(void *sock);
 void API_deleteSocket(void *sock);
 int API_connectSocket(void *sock, const char *host, int port);
