@@ -1,0 +1,5 @@
+python-ultramysql (2.2~git-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)
+
+ -- Matthias Urlichs <matthias@urlichs.de>  Fri, 24 Feb 2012 09:14:16 +0100

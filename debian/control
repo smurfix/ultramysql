@@ -1,0 +1,21 @@
+Source: python-ultramysql
+Section: python
+Priority: extra
+Maintainer: Matthias Urlichs <matthias@urlichs.de>
+Build-Depends: debhelper (>= 8.0.0), python-all-dev (>= 2.6.6-3~)
+Standards-Version: 3.9.2
+Homepage: https://github.com/esnme/ultramysql
+Vcs-Git: git://github.com/esnme/ultramysql.git
+
+Package: python-ultramysql
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+Suggests: mysql-server
+Description: Fast MySQL library for Python
+ UltraMySQL is a fast, basic library for talking to a mysql server.
+ It uses the standard Python socket module, thus works with gevent and
+ similar libraries.
+ .
+ UltraMySQL does not conform to the standard Python DBI.
+ It does not support compression, SSL, or old-style passwords.
