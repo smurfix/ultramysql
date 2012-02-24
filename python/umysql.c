@@ -143,10 +143,10 @@ void *API_createResult(int columns)
   return ret;
 }
 
-void API_resultSetField(void *result, int column, UMTypeInfo *ti, void *_name, size_t _cbName)
+void API_resultSetField(void *result, int column, UMTypeInfo *ti, char *_name, size_t _cbName)
 {
   PyObject *field = PyTuple_New(2);
-  PyTuple_SET_ITEM(field, 0, PyString_FromStringAndSize((const char *)_name, _cbName));
+  PyTuple_SET_ITEM(field, 0, PyString_FromStringAndSize(_name, _cbName));
   PyTuple_SET_ITEM(field, 1, PyInt_FromLong(ti->type));
   PyTuple_SET_ITEM(((ResultSet *) result)->fields, column, field);
   PRINTMARK();
@@ -1015,7 +1015,6 @@ PyObject *EscapeQueryArguments(Connection *self, PyObject *inQuery, PyObject *it
   char *optr;
   char *iptr;
   int heap = 0;
-  int hasArg = 0;
   int appendLen;
   PyObject *retobj;
   PyObject *iterator;
@@ -1061,9 +1060,6 @@ PyObject *EscapeQueryArguments(Connection *self, PyObject *inQuery, PyObject *it
 
   optr = obuffer;
   iptr = PyString_AS_STRING(inQuery);
-
-  hasArg = 0;
-
 
   iterator = PyObject_GetIter(iterable);
 
@@ -1275,7 +1271,7 @@ static PyTypeObject ConnectionType = {
   "umysql.Connection",		/* tp_name        */
   sizeof(Connection),		/* tp_basicsize   */
   0,				/* tp_itemsize    */
-  Connection_Destructor,		/* tp_dealloc     */
+  (destructor)Connection_Destructor,		/* tp_dealloc     */
   0,				/* tp_print       */
   0,				/* tp_getattr     */
   0,				/* tp_setattr     */
@@ -1371,7 +1367,7 @@ static PyTypeObject ResultSetType = {
   "umysql.ResultSet",		/* tp_name        */
   sizeof(ResultSet),		/* tp_basicsize   */
   0,				/* tp_itemsize    */
-  ResultSet_Destructor,		/* tp_dealloc     */
+  (destructor) ResultSet_Destructor,		/* tp_dealloc     */
   0,				/* tp_print       */
   0,				/* tp_getattr     */
   0,				/* tp_setattr     */

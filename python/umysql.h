@@ -85,7 +85,7 @@ typedef struct
 
 typedef struct __UMConnectionCAPI
 {
-  void *(*getSocket)();
+  void *(*getSocket)(void);
   void (*deleteSocket)(void *sock);
   void (*closeSocket)(void *sock);
   int (*connectSocket)(void *sock, const char *host, int port);
@@ -95,9 +95,9 @@ typedef struct __UMConnectionCAPI
   int (*sendSocket)(void *sock, const char *buffer, int cbBuffer);
 
   void *(*createResult)(int columns);
-  void (*resultSetField)(void *result, int ifield, UMTypeInfo *ti, void *name, size_t cbName);
+  void (*resultSetField)(void *result, int ifield, UMTypeInfo *ti, char *name, size_t cbName);
   void (*resultRowBegin)(void *result);
-  int (*resultRowValue)(void *result, int icolumn, UMTypeInfo *ti, void *value, size_t cbValue);
+  int (*resultRowValue)(void *result, int icolumn, UMTypeInfo *ti, char *value, size_t cbValue);
   void (*resultRowEnd)(void *result);
   void (*destroyResult)(void *result);
   void *(*resultOK)(UINT64 affected, UINT64 insertId, int serverStatus, const char *message, size_t len);

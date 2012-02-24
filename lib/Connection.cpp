@@ -68,6 +68,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define snprintf _snprintf
 #endif
 
+#ifdef __GNUC__
+#define UNUSED __attribute__((unused))
+#else
+#define UNUSED
+#endif
+
 //#define PRINTMARK() fprintf(stderr, "%08x:%s:%s MARK(%d)\n", GetTickCount(), __FILE__, __FUNCTION__, __LINE__)		
 #define PRINTMARK() 		
 
@@ -253,11 +259,11 @@ bool Connection::processHandshake()
       return false;
     }
 
-    char *serverVersion = m_reader.readNTString();
-    UINT32 threadId = m_reader.readLong();
+    char *serverVersion UNUSED = m_reader.readNTString();
+    UINT32 threadId UNUSED = m_reader.readLong();
     char *scrambleBuff = (char *) m_reader.readBytes(8);
 
-    UINT8 filler1 = m_reader.readByte();
+    UINT8 filler1 UNUSED = m_reader.readByte();
     UINT16 serverCaps = m_reader.readShort();
 
     if (!(serverCaps & MCP_PROTOCOL_41))
@@ -267,8 +273,8 @@ bool Connection::processHandshake()
     }
 
     UINT8 serverLang = m_reader.readByte();
-    UINT16 serverStatus = m_reader.readShort();
-    UINT8 *filler2 = m_reader.readBytes(13);
+    UINT16 serverStatus UNUSED = m_reader.readShort();
+    UINT8 *filler2 UNUSED = m_reader.readBytes(13);
 
 
     char *scrambleBuff2 = NULL;
@@ -564,7 +570,7 @@ void *Connection::handleOKPacket()
   UINT64 affectedRows = m_reader.readLengthCodedInteger();
   UINT64 insertId = m_reader.readLengthCodedInteger();
   UINT16 serverStatus = m_reader.readShort();
-  UINT16 warningCount = m_reader.readShort();
+  UINT16 warningCount UNUSED = m_reader.readShort();
   size_t len = m_reader.getBytesLeft();
   UINT8 *message = m_reader.readBytes(m_reader.getBytesLeft());
 
@@ -574,8 +580,8 @@ void *Connection::handleOKPacket()
 void Connection::handleErrorPacket()
 {
   UINT16 errnum = m_reader.readShort();
-  UINT8  stateMarker = m_reader.readByte();
-  UINT8 *sqlstate = m_reader.readBytes(5);
+  UINT8  stateMarker UNUSED = m_reader.readByte();
+  UINT8 *sqlstate UNUSED = m_reader.readBytes(5);
 
   size_t len = m_reader.getBytesLeft();
 
@@ -615,7 +621,7 @@ void *Connection::handleResultPacket(int _fieldCount)
     size_t cb_org_table;
     size_t cb_name;
     size_t cb_org_name;
-    size_t cb_default;
+    //size_t cb_default;
 
     UINT8 result = m_reader.readByte();
 
@@ -627,20 +633,20 @@ void *Connection::handleResultPacket(int _fieldCount)
 
     m_reader.rewind(1);
 
-    UINT8 *catalog = m_reader.readLengthCodedBinary(&cb_catalog);
-    UINT8 *db = m_reader.readLengthCodedBinary(&cb_db);
-    UINT8 *table = m_reader.readLengthCodedBinary(&cb_table);
-    UINT8 *org_table = m_reader.readLengthCodedBinary(&cb_org_table);
+    UINT8 *catalog UNUSED = m_reader.readLengthCodedBinary(&cb_catalog);
+    UINT8 *db UNUSED = m_reader.readLengthCodedBinary(&cb_db);
+    UINT8 *table UNUSED = m_reader.readLengthCodedBinary(&cb_table);
+    UINT8 *org_table UNUSED = m_reader.readLengthCodedBinary(&cb_org_table);
     UINT8 *name = m_reader.readLengthCodedBinary(&cb_name);
-    UINT8 *org_name = m_reader.readLengthCodedBinary(&cb_org_name);
+    UINT8 *org_name UNUSED = m_reader.readLengthCodedBinary(&cb_org_name);
 
-    UINT8 filler = m_reader.readByte();
+    UINT8 filler UNUSED = m_reader.readByte();
     UINT16 charset = m_reader.readShort();
-    UINT32 length = m_reader.readLong();
+    UINT32 length UNUSED = m_reader.readLong();
     UINT8 type = m_reader.readByte();
     UINT16 flags = m_reader.readShort();
-    UINT8 decimals = m_reader.readByte();
-    UINT16 filler2 = m_reader.readShort();
+    UINT8 decimals UNUSED = m_reader.readByte();
+    UINT16 filler2 UNUSED = m_reader.readShort();
 
     //UINT8 *def = m_reader.readLengthCodedBinary(&cb_default);
 
@@ -649,7 +655,7 @@ void *Connection::handleResultPacket(int _fieldCount)
     typeInfo[iTypeInfo].charset = charset;
     iTypeInfo ++;
 
-    m_capi.resultSetField(resultSet, iField, &typeInfo[iTypeInfo - 1], name, cb_name);
+    m_capi.resultSetField(resultSet, iField, &typeInfo[iTypeInfo - 1], (char *)name, cb_name);
     iField ++;
     m_reader.skip();
 
@@ -686,7 +692,7 @@ void *Connection::handleResultPacket(int _fieldCount)
     for (int index = 0; index < _fieldCount; index ++)
     {
       UINT8 *columnValue = m_reader.readLengthCodedBinary(&cb_column);
-      if (!m_capi.resultRowValue (resultSet, index, &typeInfo[index], columnValue, cb_column))
+      if (!m_capi.resultRowValue (resultSet, index, &typeInfo[index], (char *)columnValue, cb_column))
       {
         m_capi.destroyResult(resultSet);
         return NULL;
